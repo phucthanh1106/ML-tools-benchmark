@@ -1,0 +1,4 @@
+mlflow==3.13.0
+torchvision==0.27.1
+ultralytics==8.4.75
+clearml==2.1.9
