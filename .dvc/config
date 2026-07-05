@@ -1,0 +1,6 @@
+[cache]
+    type = "hardlink,symlink"
+[core]
+    remote = remote_storage
+['remote "remote_storage"']
+    url = /home/ubuntu/workspace/thanhpt/ML-tools-benchmark/mlflow-dvc/dvc-storage
