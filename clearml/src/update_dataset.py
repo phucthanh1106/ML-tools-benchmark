@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 from clearml import Dataset
+import os
 
 
 def parse_args():
@@ -136,9 +137,18 @@ def main() -> None:
 
     # Use sync_folder so modifications/deletions carry over correctly
     if args.data_path:
+        if not os.path.exists(args.data_path):
+            raise FileNotFoundError(f"The specified data_path does not exist: '{args.data_path}'")
+		
         dataset.sync_folder(local_path=str(args.data_path))
     else:
-        dataset.sync_folder(local_path=str(parent_dataset_path))
+        raise ValueError(
+            "\n[ERROR] Missing required dataset source path!\n"
+            "To sync a new dataset version, you must explicitly pass '--data_path'.\n"
+            "Do not point this to a ClearML cache directory (get_local_copy()). "
+            "Point it to your active workspace folder (e.g., '~/workspace/.../dataset')."
+        )
+
 
     # Upload the new version to the chosen storage location.
     print(f"Parent dataset ID linked successfully: {parent_dataset.id}")

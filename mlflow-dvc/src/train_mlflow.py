@@ -113,51 +113,8 @@ if __name__ == '__main__':
     clearml_dataset_id = args.data_id or config.get("data_id")
 
     # Handling user's input
-    if clearml_dataset_id:
-        print(f"ClearML Cache Engine: Fetching Dataset ID [{clearml_dataset_id}]...")
-        # 1. Download dataset into ClearML storage cache
-        clearml_dataset_path = Dataset.get(dataset_id=clearml_dataset_id).get_local_copy()
-        print(f"The path to the dataset is: {clearml_dataset_path}")
-        
-        # Path to the dataset.yaml file sitting inside the cache
-        yaml_path = os.path.join(clearml_dataset_path, "dataset.yaml")
-        
-        # 2. DYNAMICALLY REWRITE THE PATHS INSIDE THE YAML
-        if os.path.exists(yaml_path):
-            with open(yaml_path, 'r') as f:
-                yaml_content = yaml.safe_load(f)
-            
-            # Force the 'path' parameter to point to the actual extraction folder dynamically
-            yaml_content['path'] = os.path.abspath(clearml_dataset_path)
-
-            # Convert hardcoded absolute keys into relative folder paths
-            # This strips away '/workspace/data/vehicle-dataset/' and leaves just 'train/images', etc.
-            for key in ['train', 'val', 'test']:
-                if key in yaml_content and yaml_content[key]:
-                    # If it's already a clean relative path (doesn't start with /), leave it alone
-                    if not str(yaml_content[key]).startswith('/'):
-                        continue
-                        
-                    # Extract just the last two directory elements (e.g., 'train/images' or 'valid/images')
-                    path_parts = yaml_content[key].split('/')
-                    if len(path_parts) >= 2:
-                        relative_subpath = os.path.join(path_parts[-2], path_parts[-1]) # e.g., 'train/images'
-                        yaml_content[key] = relative_subpath
-            
-            # Write the updated configuration back down
-            with open(yaml_path, 'w') as f:
-                yaml.safe_dump(yaml_content, f)
-        
-        # 3. Hand the corrected YAML path over to your hyperparams dictionary
-        hyperparams["data"] = yaml_path
-        
-    else:
-        if args.data_path:
-            hyperparams["data"] = args.data_path
-        else:
-            print("Something is wrong with the data path. Please either check your latest command or your config file!")
-
-
+    if args.data_path:
+        hyperparams["data"] = args.data_path
     if args.batch:
         hyperparams["batch"] = args.batch
     if args.epochs:

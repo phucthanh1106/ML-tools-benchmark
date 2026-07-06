@@ -219,3 +219,8 @@ __marimo__/
 
 dataset/valid/
 dataset/train/
+/dataset
+mlflow-dvc/dvc-storage/
+clearml/clearml-storage/
+clearml/pull-storage/
+

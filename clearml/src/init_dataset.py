@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 from clearml import Dataset
-
+import time
 
 def parse_args():
     """Read the dataset metadata and paths from the command line."""
@@ -80,12 +80,32 @@ def main() -> None:
     # Upload to the configured warehouse location.
     print(f"Uploading dataset from: {data_path}")
     print(f"Using output URL: {output_url}")
+
+    # ========================================================
+    # ⏱️ START BENCHMARK TIMER
+    # ========================================================
+    start_time = time.perf_counter()
     dataset.upload(output_url=output_url)
 
     # Finalize to lock the dataset version and prevent accidental changes.
     dataset.finalize()
-    print("Dataset locked and versioned successfully!")
 
+    # ========================================================
+    # ⏱️ STOP BENCHMARK TIMER
+    # ========================================================
+    end_time = time.perf_counter()
+    elapsed_seconds = end_time - start_time
+
+    print("\n" + "="*50)
+    print("📊 CLEARML PUSH BENCHMARK RESULTS")
+    print("="*50)
+    print(f"Dataset Name:    {args.dataset_name} (v{args.version})")
+    print(f"Target Location: {output_url}")
+    print(f"Total Push Time: {elapsed_seconds:.2f} seconds")
+    print("="*50 + "\n")
+
+    print("Dataset locked and versioned successfully!")
+    
 if __name__ == "__main__":
     main()
 
