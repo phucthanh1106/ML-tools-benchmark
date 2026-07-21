@@ -7,7 +7,7 @@ import argparse
 import sys
 from datetime import datetime
 import yaml
-from clearml import Dataset
+import time
 
 # =========================
 # 1. Parsing arguments from command
@@ -133,6 +133,11 @@ if __name__ == '__main__':
     # 3. MLFlow Initialization
     # =========================================================================
     with mlflow.start_run(run_name=run_name) as run:
+        # ========================================================
+        # ⏱️ START BENCHMARK TIMER
+        # ========================================================
+        start_time = time.perf_counter()
+
         print(f"Active MLOps Run ID: {run.info.run_id}")
         print(f"Running task: {task} | Architecture: {architecture}")
         
@@ -151,6 +156,20 @@ if __name__ == '__main__':
             data_path = hyperparams["data"]
             if os.path.exists(data_path):
                 mlflow.log_artifact(data_path, artifact_path="dataset_configs")
+
+            # ========================================================
+            # ⏱️ STOP BENCHMARK TIMER
+            # ========================================================
+            end_time = time.perf_counter()
+            elapsed_seconds = end_time - start_time
+
+            print("\n" + "="*50)
+            print("📊 CLEARML PUSH BENCHMARK RESULTS")
+            print("="*50)
+            print(f"Total Train Time: {elapsed_seconds:.2f} seconds")
+            print("="*50 + "\n")
+            
+            print("Training completed successfully!")
 
             print("Training completed successfully!")
             mlflow.end_run(status="FINISHED")

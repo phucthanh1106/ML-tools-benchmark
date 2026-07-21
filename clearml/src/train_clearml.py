@@ -7,6 +7,7 @@ import torch
 from ultralytics import YOLO
 from ultralytics import settings
 from clearml import Task, Dataset
+import time
 
 # =========================
 # 1. Parsing arguments from command
@@ -107,6 +108,10 @@ if __name__ == '__main__':
     weights = config.get('weights', None)
     clearml_dataset_id = args.data_id or config.get("data_id")
 
+    # ========================================================
+    # ⏱️ START BENCHMARK TIMER
+    # ========================================================
+    start_time = time.perf_counter()
 
     # Handling user's input
     if clearml_dataset_id:
@@ -197,6 +202,19 @@ if __name__ == '__main__':
     
     # Ultralytics detects the active ClearML task context and pipes all metric charts automatically
     results = model.train(**hyperparams)
+
+
+    # ========================================================
+    # ⏱️ STOP BENCHMARK TIMER
+    # ========================================================
+    end_time = time.perf_counter()
+    elapsed_seconds = end_time - start_time
+
+    print("\n" + "="*50)
+    print("📊 CLEARML PUSH BENCHMARK RESULTS")
+    print("="*50)
+    print(f"Total Train Time: {elapsed_seconds:.2f} seconds")
+    print("="*50 + "\n")
     
     print("Training completed successfully!")
     task.close()

@@ -4,16 +4,16 @@ task: "detection"
 architecture: "yolo12m"          # Base architecture scale tag
 
 # Path to dataset and weights
-weights: "/home/ubuntu/workspace/thanhpt/benchmark/weights/best.pt"
+weights: "/home/ubuntu/workspace/thanhpt/ML-tools-benchmark/weights/best.pt"
 
-data_id: "356a456fe8884501878fc8bf0aff99e1"
+data_id: "450ffa4202694729abe163c2b843fef7"
 
 hyperparams:
   data:   # Dynamically resolved via Python script/environment variables
   epochs: 5           # Can be overridden via script arguments (e.g., args.epochs)
   imgsz: 640
-  batch: 8              # Can be overridden via script arguments (e.g., args.batch)
-  workers: 4
+  batch: 32              # Can be overridden via script arguments (e.g., args.batch)
+  workers: 64
   patience: 10
   save: true
   pretrained: true
@@ -27,4 +27,4 @@ hyperparams:
   mosaic: 0.0
   name: "Full"
   exist_ok: false
-  device: null          # Dynamically resolved via torch.backends check in python engine
+  device: [0, 1]        # Dynamically resolved via torch.backends check in python engine

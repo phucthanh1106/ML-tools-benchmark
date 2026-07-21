@@ -1,0 +1,18 @@
+# 1. Dataset Directory Paths
+path: /workspace/dataset   # Root dataset directory
+train: /workspace/dataset/train/images   # Path to training images (relative to 'path')
+val: /workspace/dataset/valid/images      # Path to validation images (relative to 'path')
+
+# 2. Class Configuration
+nc: 9                 # Total number of classes
+
+names:
+  0: license plate
+  1: car
+  2: bus
+  3: truck
+  4: motorcycle
+  5: person
+  6: fire
+  7: smoke
+  8: weapon

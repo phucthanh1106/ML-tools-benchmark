@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 from clearml import Dataset
 import os
-
+import time
 
 def parse_args():
 	"""Read dataset versioning inputs from the command line."""
@@ -115,6 +115,11 @@ def main() -> None:
     else: 
         raise ValueError("Please provide an output path for this dataset")
 
+	# ========================================================
+    # ⏱️ START BENCHMARK TIMER
+    # ========================================================
+    start_time = time.perf_counter()
+
     # Resolve the base dataset so ClearML can link this version to it.
     parent_dataset = resolve_parent_dataset(args)
     parent_dataset_path = parent_dataset.get_local_copy()
@@ -158,6 +163,19 @@ def main() -> None:
 
     # Finalize the version so it becomes immutable and ready for use.
     dataset.finalize()
+
+	# ========================================================
+    # ⏱️ STOP BENCHMARK TIMER
+    # ========================================================
+    end_time = time.perf_counter()
+    elapsed_seconds = end_time - start_time
+
+    print("\n" + "="*50)
+    print("📊 CLEARML PUSH BENCHMARK RESULTS")
+    print("="*50)
+    print(f"Total Push Time: {elapsed_seconds:.2f} seconds")
+    print("="*50 + "\n")
+
     print("Dataset version created successfully!")
 
 if __name__ == "__main__":
